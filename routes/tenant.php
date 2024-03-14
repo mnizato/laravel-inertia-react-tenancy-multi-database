@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Tenants\ProfileController;
+use App\Http\Controllers\Tenants\Admin\ProfileAdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -47,4 +48,19 @@ Route::middleware([
     });
 
     require __DIR__.'/auth_tenant.php';
+
+    
+    Route::get('/admin/dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
+    })->middleware(['auth:admin', 'verifiedadmin'])->name('admin.dashboard');
+    
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('/admin/profile', [ProfileAdminController::class, 'edit'])->name('admin.profile.edit');
+        Route::patch('/admin/profile', [ProfileAdminController::class, 'update'])->name('admin.profile.update');
+        Route::delete('/admin/profile', [ProfileAdminController::class, 'destroy'])->name('admin.profile.destroy');
+    });
+    
+    
+    require __DIR__.'/auth_admin.php';
+
 });

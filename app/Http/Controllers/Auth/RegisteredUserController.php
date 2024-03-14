@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Tenant;
+use App\Models\Domain;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +43,20 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        // SUBSTITUIR POSTERIORMENTE PO UM CAMPO ESPECIFICO QUE SERÁ CRIADO EM USERS
+        $tenant_id = explode(' ',$request->name)[0];
+        $tenant_id = preg_replace('/[^a-zA-Z0-9]/', '', $tenant_id);
+
+        $tenant = Tenant::create([
+            'id' => $tenant_id
+        ]);
+        
+        // SUBSTITUIR POSTERIORMENTE PELO DOMINIO DA APLICAÇÃO
+        $domain = Domain::create([
+            'domain' => $tenant_id.'.localhost',
+            'tenant_id' => $tenant_id,
         ]);
 
         event(new Registered($user));
