@@ -1,1 +1,1 @@
-# laravel-inertia-react
+# Laravel Inertia React Multitenant With Admin Guard
